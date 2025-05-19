@@ -24,7 +24,7 @@
 
       <button
         type="submit"
-        class="bg-blue-600 mt-7 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="bg-blue-600 mt-7 text-white py-2 rounded-lg hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         Login
       </button>
@@ -32,7 +32,7 @@
       <button
         type="button"
         @click="goTORegister"
-        class="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         Register
       </button>
@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     async handleLogin() {
-      console.log("Login button clicked");
       try {
         const response = await fetch("http://localhost:5000/auth/login", {
           method: "POST",
@@ -66,6 +65,10 @@ export default {
         }
 
         const data = await response.json();
+        // localStorage.setItem("username", this.username); // save the username in localstorage
+        sessionStorage.setItem("username", data.username);
+        this.$router.push('/otp');
+
         console.log("Login successful:", data);
         } catch (error) {
           console.error("Login error:", error);

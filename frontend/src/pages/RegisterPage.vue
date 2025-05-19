@@ -92,6 +92,7 @@ export default {
         }
 
         const data = await response.json();
+        this.$router.push("/");
         console.log("Registration successful:", data);
         } catch (error) {
           console.error("Registration error:", error);

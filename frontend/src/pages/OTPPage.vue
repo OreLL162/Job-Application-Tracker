@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
         <form @submit.prevent="HandleOTP" class="flex flex-col gap-4 w-96 bg-white p-6 rounded-xl shadow-md">
             <h1 class="text-4xl font-bold text-center text-blue-800 mb-4">Enter OTP</h1>
             <input
@@ -27,11 +27,93 @@
 
                   <button
             type="button"
-            @click="goToLogin"
-            class="w-full p-2 rounded bg-red-500 text-white font-semibold hover:bg-red-600 transition"
+            @click="NavToLogin"
+            class="w-full p-2 rounded text-blue-700 font-semibold hover:text-red-600 transition"
             >
             Back to Login
             </button>
         </form>
     </div>
 </template>
+
+<script>
+    export default {
+        data() {
+            return {
+                otp: "",
+                errorMessage: "",
+                // username: localStorage.getItem("username") || "",
+                username: sessionStorage.getItem("username") || "",
+                waitTime: 0,
+                resendDisabled: false,
+            };
+        },
+        
+    methods: {
+
+        async HandleOTP () {
+            try { 
+                const response = await fetch("http://localhost:5000/auth/verifyOTP" , {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        otp: this.otp,
+                    }),
+                })
+                
+                if(!response.ok) {
+                    const data = await response.json();
+                    this.errorMessage = data.message;
+                    console.error("OTP Verification failed:", this.errorMessage);
+                    alert(this.errorMessage);
+                } 
+                // localStorage.removeItem("username");
+                sessionStorage.removeItem("username");
+                const data = await response.json();
+                // should be redirected to the home page
+                console.log("OTP Verification successful:", data);
+             } catch (error) {
+                console.error("OTP Verification error:", error);
+                alert("An error occurred during OTP verification.");
+            }
+    }, 
+
+    async handleResend() {
+        try {
+            const response = await fetch("http://localhost:5000/auth/resendOTP", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({username: this.username})
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+
+                if (response.status === 429 && errorData.msg) {
+                    const match = errorData.msg.match(/(\d+)s/);
+                    if (match && match[1]) {
+                        alert(`Please wait ${match[1]} seconds before requesting a new OTP.`);
+                    } else {
+                        alert(errorData.msg); 
+                    }
+                     } else {
+                        alert(errorData.msg || "Failed to resend OTP");
+                    }
+                    return;
+                }
+            // localStorage.removeItem("username");
+            sessionStorage.removeItem("username");
+            alert("OTP resent successfully!");
+        } catch (error) {
+            console.error(error);
+            alert(error.message || "Error resending OTP");
+    }
+  },
+
+    NavToLogin() {
+        this.$router.push("/");
+    },
+}
+}
+           
+</script>
