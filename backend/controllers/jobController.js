@@ -7,6 +7,7 @@ export async function addJob(req, res) {
         const {jobTitle, companyName, applicationDate, status, notes, reminderDate } = req.body; 
 
 
+        
         if ( !jobTitle || !companyName || !applicationDate || !status) {
             return res.status(400).json({msg: "Please provide all required fields."})
         }

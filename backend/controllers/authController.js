@@ -142,6 +142,7 @@ export async function resendOTP(req, res) {
 
     try {
 
+      
         const {username} = req.body; 
         
         const user = await User.findOne({ username });
