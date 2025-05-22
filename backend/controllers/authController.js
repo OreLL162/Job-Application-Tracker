@@ -143,12 +143,13 @@ export async function resendOTP(req, res) {
     try {
 
         const {username} = req.body; 
+        
+        const user = await User.findOne({ username });
 
-          const user = await User.findOne({ username });
-          
           if (!user) {
             return res.status(404).json({ msg: 'User not found' });
           }
+
 
           const now = Date.now();
 

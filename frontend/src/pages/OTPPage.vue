@@ -42,8 +42,7 @@
             return {
                 otp: "",
                 errorMessage: "",
-                // username: localStorage.getItem("username") || "",
-                username: sessionStorage.getItem("username") || "",
+                //username: sessionStorage.getItem("username") || "",
                 waitTime: 0,
                 resendDisabled: false,
             };
@@ -68,8 +67,9 @@
                     alert(this.errorMessage);
                 } 
                 // localStorage.removeItem("username");
-                sessionStorage.removeItem("username");
+                // sessionStorage.removeItem("username");
                 const data = await response.json();
+
                 // should be redirected to the home page
                 console.log("OTP Verification successful:", data);
              } catch (error) {
@@ -79,11 +79,13 @@
     }, 
 
     async handleResend() {
+        const username = sessionStorage.getItem("username");
+
         try {
             const response = await fetch("http://localhost:5000/auth/resendOTP", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({username: this.username})
+                body: JSON.stringify({username})
             });
 
             if (!response.ok) {
@@ -101,8 +103,6 @@
                     }
                     return;
                 }
-            // localStorage.removeItem("username");
-            sessionStorage.removeItem("username");
             alert("OTP resent successfully!");
         } catch (error) {
             console.error(error);
