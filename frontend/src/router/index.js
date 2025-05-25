@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginPage from '../pages/LoginPage.vue';
 import RegisterPage from '../pages/RegisterPage.vue';
 import OTPPage from '../pages/OTPPage.vue';
+import DashboardPage from '../pages/DashboardPage.vue';
 
 const routes = [
   {
@@ -21,7 +22,12 @@ const routes = [
   {
     path: '/otp',
     component: OTPPage,
-  }
+  },
+
+  {
+    path: '/:userId/dashboard',
+    component: DashboardPage,
+  },
 ];
 
 const router = createRouter({

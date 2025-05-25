@@ -66,7 +66,7 @@ export default {
 
         const data = await response.json();
         // localStorage.setItem("username", this.username); // save the username in localstorage
-        sessionStorage.setItem("username", data.username);
+        sessionStorage.setItem("username", this.username);
         this.$router.push('/otp');
 
         console.log("Login successful:", data);

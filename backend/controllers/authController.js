@@ -128,8 +128,8 @@ export async function verifyOTP(req, res){
             maxAge: 60 * 60 * 1000
           });
         
-        console.log(` Token successfully created for user ${user.username}`);
-        return res.status(200).json({ msg: 'Login successful, token set in cookies' });
+        console.log(`Token successfully created for user ${user.username}`);
+        return res.status(200).json({ msg: 'Login successful, token set in cookies', userId: user._id.toString()});
 
     } catch (error) {
 
