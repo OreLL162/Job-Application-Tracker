@@ -1,31 +1,73 @@
 <template>
-    <div class="dashboard-page">
-        <h1 class="text-2xl font-bold">Job Application Tracker</h1>
-        <div class="flex gap-4 mt-4" >
-            <button class="btn btn-primary" @click="navigateToAddJob">Add Job</button>
-        </div>
+  <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md">
+    <header class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Job Application Tracker</h1>
+          <button
+            class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 "
+        > Add Job
+        </button>
+    </header>
+    
 
-        <div class="JobList mt-6"> 
-            <h2 class="text-xl font-semibold mb-2">Your Job Applications</h2>
-            <div v-if="jobs.lenght === 0" class="text-gray-500">No job applications found.</div>
-            <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div v-for="job in jobs" :key="job._id" class="job-card">
-                    <h3 class="font-semibold">{{ job.title }}</h3>
-                    <p>Company: {{ job.companyName }}</p>
-                    <p>Status: {{ job.status }}</p>
-                    <p>Reminder: {{ job.reminderDate || "Not set" }}</p>
-                    <!-- need to add edit job button -->
-                </div>
-            </div>
-        </div>
-    </div>
+    <table class="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+            Company
+          </th>
+          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+            Job Title
+          </th>
+          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+            status
+          </th>
+          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+            Actions
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+      <tr 
+        v-for="job in jobs"
+        :key="job._id"
+        class="border-b last:border-none hover:bg-gray-100"
+        >
+        <td class="py-3 px-4 text-gray-700">{{ job.companyName }}</td>
+        <td class="py-3 px-4 text-gray-700">{{ job.jobTitle }}</td>
+        <td class="py-3 px-4">
+          <span
+            class="inline-block px-3 py-1 text-sm font-medium rounded-lg"
+            :class="getStatusClass(job.status)"
+
+          >
+            {{ job.status }}
+          </span>
+        </td>
+        <td class="py-3 px-4">
+          <button class="text-blue-600 hover:underline mr-4">View</button>
+          <button class="text-blue-600 hover:underline">Edit</button>        
+        </td>
+      </tr>
+
+    </tbody>
+    </table>
+
+      </div>
 </template>
 
 
 
 
 <script>
+console.log("Component script loaded");
+
 export default {
+
+  mounted() {
+    console.log("Mounted lifecycle hook called");
+    this.fetchJobs()
+  },
 
   data() {
     return {
@@ -33,7 +75,19 @@ export default {
     };
   },
 
-  method: {
+  methods: {
+
+    getStatusClass(status) {
+      const classes = {
+        Applied: "bg-blue-200 text-blue-700",
+        Interviewing: "bg-purple-200 text-purple-700",
+        Assignment:"bg-orange-200 text-orange-700",
+        Offer: "bg-green-200 text-green-700",
+        Rejected: "bg-red-200 text-red-700",
+      };
+      return classes[status] || "bg-gray-100 text-gray-700";
+    },
+
     navigateToAddJob() {
       //this.$router.push(`/add-job`);
     },
@@ -43,42 +97,26 @@ export default {
     },
 
     async fetchJobs(){
-        const userID = this.$route.params.userId; 
-
         try{
-            const response = await fetch('http://localhost:5000/jobs/getAllJobs');
+            const response = await fetch('http://localhost:5000/jobs/getAllJobs',
+            );
 
             if ( !response.ok ) {
                 throw new Error("Failed to fetch jobs");
             }
             
             const data = await response.json()
-            this.jobs = data.jobs;
+            this.jobs = data;
+            console.log("Fetched jobs:", this.jobs);
+
 
         } catch (error) {
-            console.error(error);
-            alert("Error fetching jobs");
+            console.error(error.message);
+            alert(error.message || "Error fetching jobs");
         }
     },
-
-    created() {
-        const userId = this.$route.params.userId;
-        this.fetchJobs();
-    }
   }, 
     
     } 
 </script>
 
-
-<style scoped>
-.dashboard-page {
-  padding: 16px;
-}
-.job-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  background-color: #fff;
-}
-</style>

@@ -5,6 +5,12 @@ export async function addJob(req, res) {
 
     try {
         const {jobTitle, companyName, applicationDate, status, notes, reminderDate } = req.body; 
+        const userId = req.body.userId;
+
+        if( !userId ) {
+            return res.status(400).json({msg: "Invalid UserId."})
+
+        }
 
 
         if ( !jobTitle || !companyName || !applicationDate || !status) {
@@ -84,6 +90,7 @@ export async function getAllJobs(req, res) {
 
     try { 
         const jobs = await Job.find().sort({applicationDate: -1})
+        console.log("Fetched jobs:", jobs);
         res.status(200).json(jobs);
     } catch (error) {
         console.error('Error retrieving jobs:', error.message);
