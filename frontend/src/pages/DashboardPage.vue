@@ -3,7 +3,8 @@
     <header class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Job Application Tracker</h1>
           <button
-            class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 "
+          @click="openAddJobModal"
+          class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 "
         > Add Job
         </button>
     </header>
@@ -20,6 +21,9 @@
           </th>
           <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
             status
+          </th>
+                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+            Application Date
           </th>
           <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
             Actions
@@ -44,28 +48,35 @@
             {{ job.status }}
           </span>
         </td>
+
+        <td class="py-3 px-4 text-gray-700">{{ formatDate(job.applicationDate) }}</td>
+
         <td class="py-3 px-4">
           <button class="text-blue-600 hover:underline mr-4">View</button>
-          <button class="text-blue-600 hover:underline">Edit</button>        
+          <button
+          @click="openEditJobModal"
+          class="text-blue-600 hover:underline">Edit</button>        
         </td>
       </tr>
 
     </tbody>
     </table>
 
-      </div>
+    <router-view />
+
+  </div>
 </template>
 
 
 
 
 <script>
-console.log("Component script loaded");
+import JobModal from '../components/JobModal.vue';
+import router from '../router';
 
 export default {
 
   mounted() {
-    console.log("Mounted lifecycle hook called");
     this.fetchJobs()
   },
 
@@ -76,6 +87,10 @@ export default {
   },
 
   methods: {
+
+    formatDate(dateString) {
+      return new Date(dateString).toISOString().split("T")[0]; // Extracts only the date
+    },
 
     getStatusClass(status) {
       const classes = {
@@ -88,13 +103,18 @@ export default {
       return classes[status] || "bg-gray-100 text-gray-700";
     },
 
-    navigateToAddJob() {
-      //this.$router.push(`/add-job`);
+    openAddJobModal() {
+      console.log('Add job button clicked');
+      this.$router.push({name:'AddJob', params: {userId: this.$route.params.userId}});
     },
 
-    editJob(jobId) {
-        //this.$router.push(`/${jobId}/edit-job`);
-    },
+    openEditJobModal(jobId) {
+      console.log('Edit button clicked');
+      this.$router.push({
+      name: 'EditJob',
+      params: { userId: this.$route.params.userId, jobId },
+    });
+  },
 
     async fetchJobs(){
         try{

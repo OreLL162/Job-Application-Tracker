@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 import Job from "../models/Job.js";
 
 export async function addJob(req, res) { 
-
+    console.log(req.body);
     try {
-        const {jobTitle, companyName, applicationDate, status, notes, reminderDate } = req.body; 
-        const userId = req.body.userId;
+        const {jobTitle, companyName, applicationDate, status, notes, reminderDate, user } = req.body; 
 
-        if( !userId ) {
-            return res.status(400).json({msg: "Invalid UserId."})
+
+        if( !user ) {
+            return res.status(400).json({msg: "Invalid User."})
 
         }
 
@@ -23,8 +23,11 @@ export async function addJob(req, res) {
             applicationDate,
             status,
             notes,
-            reminderDate
+            reminderDate,
+            user
         });
+
+        
 
         const savedJob = await newJob.save();
 
