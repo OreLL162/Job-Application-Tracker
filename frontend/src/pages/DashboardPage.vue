@@ -63,6 +63,12 @@
     </table>
 
     <router-view />
+    <JobModal
+      :isVisible="showJobModal"
+      :job="selectedJob"
+      @close="showJobModal = false"
+      @saved="handleJobSaved"
+    />
 
   </div>
 </template>
@@ -72,21 +78,41 @@
 
 <script>
 import JobModal from '../components/JobModal.vue';
-import router from '../router';
 
 export default {
+
+  components: {
+    JobModal
+  },
 
   mounted() {
     this.fetchJobs()
   },
 
+
   data() {
     return {
       jobs: [],
+      showJobModal: false,
+      selectedJob: null
     };
   },
 
   methods: {
+  
+  handleJobSaved() {
+    this.showJobModal = false;
+    this.fetchJobs(); // Refresh the job list after saving
+  },
+
+  openAddJobModal() {
+    this.selectedJob = null;
+    this.showJobModal = true;
+  },
+  openEditJobModal(job) {
+    this.selectedJob = job;
+    this.showJobModal = true;
+  },
 
     formatDate(dateString) {
       return new Date(dateString).toISOString().split("T")[0]; // Extracts only the date
@@ -102,20 +128,7 @@ export default {
       };
       return classes[status] || "bg-gray-100 text-gray-700";
     },
-
-    openAddJobModal() {
-      console.log('Add job button clicked');
-      this.$router.push({name:'AddJob', params: {userId: this.$route.params.userId}});
-    },
-
-    openEditJobModal(jobId) {
-      console.log('Edit button clicked');
-      this.$router.push({
-      name: 'EditJob',
-      params: { userId: this.$route.params.userId, jobId },
-    });
-  },
-
+  
     async fetchJobs(){
         try{
             const response = await fetch('http://localhost:5000/jobs/getAllJobs',

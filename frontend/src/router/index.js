@@ -28,20 +28,6 @@ const routes = [
   {
     path: '/:userId/dashboard',
     component: DashboardPage,
-    children: [
-      {
-        path:'addJob',
-        name:'AddJob',
-        component: JobModal,
-        props: route => ({ isVisible: true })
-      },
-
-      // {
-      //   path:'/edit-job/:jobId',
-      //   name:'EditJob',
-      //   component: JobModal,
-      // }
-    ],
   },
 
 

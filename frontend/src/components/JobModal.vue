@@ -8,12 +8,6 @@
             <h2 class="text-xl font-semibold">
                 {{ job ? "Edit Job" : "Add New Job" }}
             </h2>
-            <button
-                type="button"
-                @click="closeModal"
-                class="text-2xl text-gray-500 hover:text-gray-700 ml-4"
-                aria-label="Close Modal"
-            >X</button>
         </div>
         <form @submit.prevent="handleSubmit">
             <div class="mb-4">
@@ -46,11 +40,11 @@
                 class="w-full border border-gray-300 rounded px-3 py-2"
                 required
                 >
-                <option value="applied">Applied</option>
-                <option value="interview">Interview</option>
+                <option value="Applied">Applied</option>
+                <option value="Interview">Interview</option>
                 <option value="Assignment">Assignment</option>
                 <option value="Offer">Offer</option>
-                <option value="rejected">Rejected</option>
+                <option value="Rejected">Rejected</option>
                 </select>
             </div>
             <div class="mb-4">
@@ -139,7 +133,8 @@ export default {
     methods: {
 
         closeModal(){
-            this.$emit("close")
+            console.log("closeModal called");
+            this.$emit("close");
         },
 
         async handleSubmit() {
