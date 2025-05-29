@@ -125,14 +125,40 @@ export default {
         job: {
             immediate: true,
             handler(newJob) {
+                if (newJob) {
+                    this.jobData = {
+                        jobTitle: newJob.jobTitle || "",
+                        companyName: newJob.companyName || "",
+                        status: newJob.status || "",
+                        applicationDate: newJob.applicationDate || "",
+                        notes: newJob.notes || "",
+                        reminderDate: newJob.reminderDate || "",
+                        user: newJob.user,
+                    };
+                } else {
+                    this.jobData = {
+                        jobTitle: "",
+                        companyName: "",
+                        status: "",
+                        applicationDate: "",
+                        notes: "",
+                        reminderDate: "",
+                        user: this.userId,
+                    };
+                }
+            }
+        },
+        isVisible(newVal) {
+            // If opening modal for add (job is null), reset the form
+            if (newVal && !this.job) {
                 this.jobData = {
-                    jobTitle: newJob?.jobTitle || "",
-                    companyName: newJob?.companyName || "",
-                    status: newJob?.status || "",
-                    applicationDate: newJob?.applicationDate || "",
-                    notes: newJob?.notes || "",
-                    reminderDate: newJob?.reminderDate || "",
-                    user: newJob?.user,
+                    jobTitle: "",
+                    companyName: "",
+                    status: "",
+                    applicationDate: "",
+                    notes: "",
+                    reminderDate: "",
+                    user: this.userId,
                 };
             }
         }

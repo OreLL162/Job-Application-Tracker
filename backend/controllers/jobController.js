@@ -89,10 +89,11 @@ export async function deleteJobApplication(req, res) {
     }
 };
 
-export async function getAllJobs(req, res) {
+export async function getAllJobsByUser(req, res) {
 
     try { 
-        const jobs = await Job.find().sort({applicationDate: -1})
+        const {userId} = req.params;
+        const jobs = await Job.find({user: userId}).sort({applicationDate: -1})
         console.log("Fetched jobs:", jobs);
         res.status(200).json(jobs);
     } catch (error) {

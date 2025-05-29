@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md">
+  <div class="w-full max-w-7xl min-w-[280px] mx-auto p-6 bg-white rounded-2xl shadow-md">
     <header class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Job Application Tracker</h1>
           <button
@@ -111,7 +111,8 @@ export default {
       jobs: [],
       showJobModal: false,
       showDeleteJobModal : false,
-      selectedJob: null
+      selectedJob: null,
+      jobIdToDelete:null
     };
   },
 
@@ -159,7 +160,8 @@ export default {
   
     async fetchJobs(){
         try{
-            const response = await fetch('http://localhost:5000/jobs/getAllJobs',
+            const userId = this.$route.params.userId;
+            const response = await fetch(`http://localhost:5000/jobs/getAllJobsByUser/${userId}`,
             );
 
             if ( !response.ok ) {
