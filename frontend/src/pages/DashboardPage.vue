@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md">
     <header class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Job Application Tracker</h1>
+        <h1 class="text-3xl font-bold text-gray-800">Job Application Tracker</h1>
           <button
           @click="openAddJobModal"
           class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 "
@@ -13,19 +13,19 @@
     <table class="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
       <thead class="bg-gray-50">
         <tr>
-          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+          <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">
             Company
           </th>
-          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+          <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">
             Job Title
           </th>
-          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+          <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">
             status
           </th>
-                    <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+          <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">
             Application Date
           </th>
-          <th class="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+          <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">
             Actions
           </th>
         </tr>
@@ -54,8 +54,14 @@
         <td class="py-3 px-4">
           <button class="text-blue-600 hover:underline mr-4">View</button>
           <button
-          @click="openEditJobModal"
-          class="text-blue-600 hover:underline">Edit</button>        
+          @click="openEditJobModal(job)"
+          class="text-blue-600 hover:underline">Edit</button>    
+          
+          <button
+          class="text-xl ml-10 text-gray-800 hover:underline hover:text-black "
+          @click="askToDeleteJob(job._id)">
+          X
+          </button>
         </td>
       </tr>
 
@@ -70,6 +76,14 @@
       @saved="handleJobSaved"
     />
 
+
+    <deleteModal
+      :isVisible="showDeleteJobModal"
+      :jobId="jobIdToDelete"
+      @close="showDeleteJobModal = false"
+      @deleted="handleJobDeleted"
+    />
+
   </div>
 </template>
 
@@ -78,11 +92,13 @@
 
 <script>
 import JobModal from '../components/JobModal.vue';
+import deleteModal from '../components/deleteModal.vue';
 
 export default {
 
   components: {
-    JobModal
+    JobModal,
+    deleteModal
   },
 
   mounted() {
@@ -94,11 +110,22 @@ export default {
     return {
       jobs: [],
       showJobModal: false,
+      showDeleteJobModal : false,
       selectedJob: null
     };
   },
 
   methods: {
+
+  askToDeleteJob(jobId){
+    this.jobIdToDelete = jobId;
+    this.showDeleteJobModal = true
+  },
+
+  handleJobDeleted(){
+    this.showDeleteJobModal = false;
+    this.fetchJobs();
+  },
   
   handleJobSaved() {
     this.showJobModal = false;
@@ -110,8 +137,9 @@ export default {
     this.showJobModal = true;
   },
   openEditJobModal(job) {
-    this.selectedJob = job;
+    this.selectedJob = {...job};
     this.showJobModal = true;
+
   },
 
     formatDate(dateString) {
@@ -121,7 +149,7 @@ export default {
     getStatusClass(status) {
       const classes = {
         Applied: "bg-blue-200 text-blue-700",
-        Interviewing: "bg-purple-200 text-purple-700",
+        Interview: "bg-purple-200 text-purple-700",
         Assignment:"bg-orange-200 text-orange-700",
         Offer: "bg-green-200 text-green-700",
         Rejected: "bg-red-200 text-red-700",
@@ -148,7 +176,24 @@ export default {
             alert(error.message || "Error fetching jobs");
         }
     },
-  }, 
+    
+    async deleteJob(jobId) {
+      try{
+        const response = await fetch(`http://localhost:5000/jobs/deleteJob/${jobId}`,{
+          method: "DELETE"
+        });
+
+        if(!response.ok) {
+          throw new Error("Delete job failed");  
+          }
+
+        // Remove the deleted job from the jobs array
+        await this.fetchJobs()
+      } catch ( error ) {
+        alert(error.message || "Error deleting job");
+       }
+    },
+  } 
     
     } 
 </script>

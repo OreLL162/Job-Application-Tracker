@@ -121,6 +121,23 @@ export default {
         };
     },
 
+    watch: {
+        job: {
+            immediate: true,
+            handler(newJob) {
+                this.jobData = {
+                    jobTitle: newJob?.jobTitle || "",
+                    companyName: newJob?.companyName || "",
+                    status: newJob?.status || "",
+                    applicationDate: newJob?.applicationDate || "",
+                    notes: newJob?.notes || "",
+                    reminderDate: newJob?.reminderDate || "",
+                    user: newJob?.user,
+                };
+            }
+        }
+    },
+
     computed: {
     userId() {
       return this.$route.params.userId;

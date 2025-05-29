@@ -3,7 +3,6 @@ import LoginPage from '../pages/LoginPage.vue';
 import RegisterPage from '../pages/RegisterPage.vue';
 import OTPPage from '../pages/OTPPage.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
-import JobModal from '../components/JobModal.vue';
 
 const routes = [
   {
