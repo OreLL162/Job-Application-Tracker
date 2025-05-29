@@ -42,7 +42,6 @@
             return {
                 otp: "",
                 errorMessage: "",
-                //username: sessionStorage.getItem("username") || "",
                 waitTime: 0,
                 resendDisabled: false,
             };

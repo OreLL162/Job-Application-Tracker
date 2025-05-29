@@ -50,11 +50,12 @@
             <div class="mb-4">
                 <label for="applicationDate" class="block text-sm font-medium mb-2">Application Date</label>
                 <input
-                v-model="jobData.applicationDate"
-                type="date"
-                id="applicationDate"
-                class="w-full border border-gray-300 rounded px-3 py-2"
-                required
+                  :value="formattedApplicationDate"
+                  @input="jobData.applicationDate = $event.target.value"
+                  type="date"
+                  id="applicationDate"
+                  class="w-full border border-gray-300 rounded px-3 py-2"
+                  required
                 />
             </div>
             <div class="mb-4">
@@ -69,10 +70,11 @@
             <div class="mb-4">
                 <label for="reminderDate" class="block text-sm font-medium mb-2">Reminder Date</label>
                 <input
-                v-model="jobData.reminderDate"
-                type="date"
-                id="reminderDate"
-                class="w-full border border-gray-300 rounded px-3 py-2"
+                  :value="formattedReminderDate"
+                  @input="jobData.reminderDate = $event.target.value"
+                  type="date"
+                  id="reminderDate"
+                  class="w-full border border-gray-300 rounded px-3 py-2"
                 />
             </div>
             <div class="flex justify-end space-x-3">
@@ -149,7 +151,6 @@ export default {
             }
         },
         isVisible(newVal) {
-            // If opening modal for add (job is null), reset the form
             if (newVal && !this.job) {
                 this.jobData = {
                     jobTitle: "",
@@ -172,6 +173,14 @@ export default {
     jobId () {
         return this.job?._id;
     },
+    formattedApplicationDate() {
+        if (!this.jobData.applicationDate) return "";
+        return this.jobData.applicationDate.slice(0, 10);
+      },
+      formattedReminderDate() {
+        if (!this.jobData.reminderDate) return "";
+        return this.jobData.reminderDate.slice(0, 10);
+      }
     },
     methods: {
 

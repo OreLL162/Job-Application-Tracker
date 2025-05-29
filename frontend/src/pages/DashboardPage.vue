@@ -7,10 +7,15 @@
           class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 "
         > Add Job
         </button>
+
+        <button
+          @click="signOut"
+          class="bg-red-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-700"
+        >Sign Out</button>
     </header>
     
 
-    <table class="w-full border-collapse rounded-lg overflow-hidden shadow-sm">
+    <table class="w-full border-collapse rounded-lg overflow-hidden shadow-sm min-h-[200px]">
       <thead class="bg-gray-50">
         <tr>
           <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">
@@ -52,15 +57,14 @@
         <td class="py-3 px-4 text-gray-700">{{ formatDate(job.applicationDate) }}</td>
 
         <td class="py-3 px-4">
-          <button class="text-blue-600 hover:underline mr-4">View</button>
           <button
           @click="openEditJobModal(job)"
-          class="text-blue-600 hover:underline">Edit</button>    
+          class="text-blue-600 hover:underline">View/Edit</button>    
           
           <button
-          class="text-xl ml-10 text-gray-800 hover:underline hover:text-black "
+          class="ml-5 text-blue-600 hover:underline hover:text-black "
           @click="askToDeleteJob(job._id)">
-          X
+          Delete
           </button>
         </td>
       </tr>
@@ -117,6 +121,11 @@ export default {
   },
 
   methods: {
+
+  signOut() {
+    sessionStorage.removeItem("username")
+    this.$router.replace('/login')
+  },
 
   askToDeleteJob(jobId){
     this.jobIdToDelete = jobId;
