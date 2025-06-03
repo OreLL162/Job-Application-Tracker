@@ -1,9 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex flex-col">
-    <!-- Top bar with sign out button -->
     <div class="flex justify-end items-center p-4">
       <button
-        @click="signOut"
+        @click="askToSignOut"
         class="bg-red-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-red-700"
       >Sign Out</button>
     </div>
@@ -16,8 +15,18 @@
           class="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-800 transition"
         >Add Job</button>
       </header>
+
+    <div class="mb-4 flex justify-center gap-2">
+      <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Search company, job title, or status..."
+      class="w-80 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    </div>
+
       <table class="w-full border-collapse rounded-lg overflow-hidden shadow-sm min-h-[200px]">
-        <thead class="bg-gray-50">
+        <thead class="bg-gray-100">
           <tr>
             <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">Company</th>
             <th class="text-left py-3 px-4 text-md font-semibold text-gray-700">Job Title</th>
@@ -28,7 +37,7 @@
         </thead>
         <tbody>
           <tr 
-            v-for="job in jobs"
+            v-for="job in filteredJobs"
             :key="job._id"
             class="border-b last:border-none hover:bg-blue-50 transition"
           >
@@ -70,6 +79,12 @@
         @close="showDeleteJobModal = false"
         @deleted="handleJobDeleted"
       />
+
+      <SignOutModal 
+        :isVisible="showSignOutModal"
+        @close="showSignOutModal = false"
+        @signedOut="handleSignOut"
+      />
     </div> 
 
   <div class="fixed top-1/2 left-8 transform -translate-y-1/2 z-20">
@@ -92,6 +107,8 @@
 import JobModal from '../components/JobModal.vue';
 import deleteModal from '../components/deleteModal.vue';
 import JobsStatsChart from '../components/JobsStatsChart.vue';
+import SignOutModal from '../components/SignOutModal.vue';
+
 
 
 export default {
@@ -100,6 +117,7 @@ export default {
     JobModal,
     deleteModal,
     JobsStatsChart,
+    SignOutModal,
   },
 
   mounted() {
@@ -113,15 +131,33 @@ export default {
       showJobModal: false,
       showDeleteJobModal : false,
       selectedJob: null,
-      jobIdToDelete:null
+      jobIdToDelete:null,
+      showSignOutModal:false,
+      searchQuery:"",
     };
+  },
+
+  computed: {
+    filteredJobs() {
+      if (!this.searchQuery) return this.jobs;
+      const q = this.searchQuery.toLowerCase();
+      return this.jobs.filter(job =>
+        (job.companyName && job.companyName.toLowerCase().includes(q)) ||
+        (job.jobTitle && job.jobTitle.toLowerCase().includes(q)) ||
+        (job.status && job.status.toLowerCase().includes(q))
+      );
+    }
   },
 
   methods: {
 
-  signOut() {
-    sessionStorage.removeItem("username")
-    this.$router.replace('/login')
+  handleSignOut() {
+    sessionStorage.removeItem("username");
+    this.showSignOutModal = false;
+    this.$router.replace('/login');
+  },
+  askToSignOut(){
+    this.showSignOutModal = true;
   },
 
   askToDeleteJob(jobId){
