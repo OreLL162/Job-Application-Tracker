@@ -82,8 +82,12 @@ export async function login(req, res) { // When user Loggin in, he recieves OTP 
 
 
         // send the OTP email
-        const emailBody = otpEmailText(existingUser.username, otp);
-        await sendEmail(existingUser.email, 'Your OTP Code', emailBody);
+        await sendEmail(
+          existingUser.email,
+          'ApplyFlow OTP Code',
+          otpEmailText,
+          { username: existingUser.username, otp } 
+        );
 
 
 
@@ -165,9 +169,12 @@ export async function resendOTP(req, res) {
           console.log(`Resent OTP to ${user.username}: ${otp}`);
 
           //Resend OTP mail again
-
-          const emailBody = otpEmailText(user.username, otp);
-          await sendEmail(user.email, 'Your OTP Code', emailBody);
+          await sendEmail(
+            user.email,
+            'ApplyFlow OTP Code',
+            otpEmailText,
+            { username: user.username, otp } 
+          );
 
           res.status(200).json({msg:"OTP resend successfully!"});
     } catch (error) {
