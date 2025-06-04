@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
+import './utils/jobReminders.js';
 // import protectedRoutes from './routes/protectedRoutes.js'
 
 

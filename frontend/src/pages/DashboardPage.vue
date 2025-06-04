@@ -21,7 +21,7 @@
       v-model="searchQuery"
       type="text"
       placeholder="Search company, job title, or status..."
-      class="w-80 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="w-110 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
     </div>
 
@@ -172,7 +172,7 @@ export default {
   
   handleJobSaved() {
     this.showJobModal = false;
-    this.fetchJobs(); // Refresh the job list after saving
+    this.fetchJobs();
   },
 
   openAddJobModal() {
