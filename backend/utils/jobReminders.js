@@ -56,7 +56,8 @@ async function sendJobReminders() {
   }
 }
 
-//sendJobReminders();
+sendJobReminders();
+
 
 // Keep your cron job for production
 cron.schedule('0 8 * * *', sendJobReminders);

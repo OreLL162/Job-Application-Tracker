@@ -133,6 +133,7 @@ export async function verifyOTP(req, res){
           });
         
         console.log(`Token successfully created for user ${user.username}`);
+        console.log('Cookies:', req.cookies);
         return res.status(200).json({ msg: 'Login successful, token set in cookies', userId: user._id.toString()});
 
     } catch (error) {
